@@ -1,0 +1,224 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>Student Management</title>
+	<style>
+.studentTable th {
+	background-color: midnightblue !important;
+	color: white !important;
+	font-weight: bold;
+	cursor: default;
+}
+
+.studentTable th:hover {
+	background-color: red !important;
+	color: white !important;
+}
+
+.panelGridButton {
+	background-color: midnightblue !important;
+	color: white !important;
+	width: 100px;
+	border: none;
+	margin-right: 10px;
+}
+
+.panelGridButtonAdd {
+	background-color: midnightblue !important;
+	color: white !important;
+	width: 150px;
+	border: none;
+	margin-right: 10px;
+}
+
+.dataTableButton {
+	background-color: midnightblue !important;
+	color: white !important;
+	width: 100px;
+	border: none;
+	margin-right: 10px;
+}
+
+.dataTableButton:hover {
+	background-color: red !important;
+	color: white !important;
+}
+
+.actionsColumn {
+	display: flex;
+	align-items: center;
+}
+
+.actionsColumn .dataTableButton {
+	margin-right: 5px;
+}
+
+.dialogButtons {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	margin-top: 30px;
+}
+
+.dialogButtons .dialogButton {
+	background-color: midnightblue !important;
+	color: white !important;
+	width: 100px;
+	border: none;
+	margin-left: 10px;
+	border: none;
+	margin-right: 10px; /* Adjusted margin-right for spacing */
+}
+
+.dialogContainer {
+	padding: 20px;
+}
+
+.dialogPanelGrid {
+	margin: 0 auto;
+	width: 100%;
+}
+
+.dialogLabel, .dialogInput {
+	display: block;
+	width: 100%;
+}
+
+.sidebarbutton {
+	color: white !important;
+	background-color: none;
+	padding: 10px;
+	font-weight: bold;
+}
+
+.navbar {
+	background-color: midnightblue !important;
+	color: white !important;
+	display: flex;
+	align-items: center;
+}
+
+.sidebarmenu {
+	width: 100%;
+}
+</style>
+
+
+</h:head>
+<h:body>
+	
+
+	<h:form id="mainPageForm">
+
+		<p:panelGrid columns="5" style="margin-top:30px">
+
+			<h:outputLabel id="lbl_sdnt_search" value="Student Id" for="searchId" />
+			<p:inputText id="searchId" value="#{student.searchStudentId}"
+				required="true" requiredMessage="Enter Student ID" />
+
+			<p:commandButton id="searchButton" value="Search" icon="pi pi-search"
+				styleClass="panelGridButtonAdd" action="#{student.searchStudent}"
+				update="studentTable" />
+
+			<p:commandButton id="resetButton" value="Reset"
+				styleClass="panelGridButtonAdd" action="#{student.resetSearch}"
+				update="studentTable" />
+
+			<p:commandButton value="Add Student" styleClass="panelGridButtonAdd"
+				oncomplete="PF('formDialogStudent').show()" />
+		</p:panelGrid>
+	</h:form>
+
+	<h3>Student Details</h3>
+
+	<p:dataTable id="studentTable" var="student" editable="true"
+		value="#{student.listOfStudents}" showGridlines="true">
+
+		<p:ajax event="rowEdit" listener="#{student.onRowEdit}"
+			update="studentTable" />
+
+
+		<p:column headerText="Id" sortBy="#{student.student_id}">
+			<p:cellEditor>
+				<f:facet name="output">
+					<h:outputText value="#{student.student_id}" />
+				</f:facet>
+				<f:facet name="input">
+					<p:inputText value="#{student.student_id}" style="width:100%" />
+				</f:facet>
+			</p:cellEditor>
+		</p:column>
+
+		<p:column headerText="Name">
+			<p:cellEditor>
+				<f:facet name="output">
+					<h:outputText value="#{student.student_name}" />
+				</f:facet>
+				<f:facet name="input">
+					<p:inputText value="#{student.student_name}" style="width:100%" />
+				</f:facet>
+			</p:cellEditor>
+		</p:column>
+
+		<p:column headerText="Delete">
+			<p:commandButton id="delete" value="Delete"
+				oncomplete="PF('deleteDialog').show()"
+				actionListener="#{student.deleteStudent(student)}"
+				update="deleteForm" />
+		</p:column>
+	</p:dataTable>
+
+	<p:dialog header="Delete Student" widgetVar="deleteDialog" modal="true"
+		id="deleteDlg" resizable="false">
+		<h:form id="deleteForm">
+			<h:outputText value="Are you sure you want to delete this student?" />
+			<p:commandButton value="Yes" oncomplete="PF('deleteDialog').hide()"
+				update="studentTable" />
+			<p:commandButton value="No" onclick="PF('deleteDialog').hide()" />
+		</h:form>
+	</p:dialog>
+
+	<h:form id="studentForm">
+		<p:dialog id="frm_dialog" widgetVar="formDialogStudent"
+			header="Student Form" showEffect="fade" hideEffect="fade"
+			closeOnEscape="true" styleClass="dialogContainer" minHeight="40"
+			height="500px" width="750" resizable="true" responsive="true">
+
+			<p:panelGrid id="dialog_panel_grid" columns="2" style="width: 100%;">
+
+				<p:outputLabel for="StudentName" styleClass="block">Student Name</p:outputLabel>
+				<p:inputText id="StudentName" styleClass="block"
+					value="#{student.student_name}" required="true"
+					requiredMessage="Name is required field" />
+
+				<p:outputLabel for="landmark" styleClass="block">Landmark</p:outputLabel>
+				<p:inputText id="landmark" styleClass="block"
+					value="#{student.landmark}" />
+
+				<p:outputLabel for="pincode" styleClass="block">Pincode</p:outputLabel>
+				<p:inputText id="pincode" styleClass="block"
+					value="#{student.pincode}" />
+			</p:panelGrid>
+
+
+			<div class="dialogButtons">
+				<p:commandButton id="submit_btn" value="Submit" type="submit"
+					styleClass="dialogButton" actionListener="#{student.addStudent}"
+					process="@form"
+					update="studentTable,dialog_panel_grid"
+					oncomplete="PF('formDialogStudent').hide();" />
+
+				<p:commandButton id="cancel_btn" value="Cancel" type="button"
+					icon="pi pi-times" onclick="PF('formDialogStudent').hide()"
+					styleClass="dialogButton" update="frm_dialog" process="@this" />
+			</div>
+
+		</p:dialog>
+	</h:form>
+</h:body>
+</html>

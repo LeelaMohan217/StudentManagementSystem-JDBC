@@ -1,0 +1,231 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>City Management</title>
+
+	<style>
+.cityTable th {
+	background-color: midnightblue !important;
+	color: white !important;
+	font-weight: bold;
+	cursor: default;
+}
+
+.cityTable th:hover {
+	background-color: red !important;
+	color: white !important;
+}
+
+.panelGridButton {
+	background-color: midnightblue !important;
+	color: white !important;
+	width: 100px;
+	border: none;
+	margin-right: 10px;
+	border: none;
+}
+
+.panelGridButtonAdd {
+	background-color: midnightblue !important;
+	color: white !important;
+	width: 150px;
+	border: none;
+	margin-right: 10px;
+	border: none;
+}
+
+.dataTableButton {
+	background-color: midnightblue !important;
+	color: white !important;
+	width: 100px;
+	border: none;
+	margin-right: 10px;
+}
+
+.dataTableButton:hover {
+	background-color: red !important;
+	color: white !important;
+}
+
+.actionsColumn {
+	display: flex;
+	align-items: center;
+}
+
+.actionsColumn .dataTableButton {
+	margin-right: 5px;
+}
+
+.actionsColumn .dialogButton {
+	margin-right: 5px;
+}
+
+.dialogButtons {
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+	margin-top: 30px;
+}
+
+.dialogButton {
+	background-color: midnightblue !important;
+	color: white !important;
+	width: 100px;
+	border: none;
+	margin-right: 10px;
+	border: none;
+}
+
+.dialogContainer {
+	padding: 20px;
+}
+
+.dialogPanelGrid {
+	margin: 0 auto;
+	width: 100%;
+}
+
+.dialogLabel, .dialogInput {
+	display: block;
+	width: 100%;
+}
+
+.sidebarbutton {
+	color: white !important;
+	background-color: none;
+	padding: 10px;
+	font-weight: bold;
+}
+
+.navbar {
+	background-color: midnightblue !important;
+	color: white !important;
+	display: flex;
+	align-items: center;
+}
+
+.sidebarmenu {
+	width: 100%;
+}
+</style>
+</h:head>
+
+<h:body>
+	<div class="navbar">
+		<h:form>
+			<p:sidebar widgetVar="sidebar" position="left">
+				<h3>Student Mangement System</h3>
+				<p:menu styleClass="sidebarmenu">
+
+					<p:menuitem value="Student" icon="pi pi-user" action="student" />
+					<p:menuitem value="Country" icon="pi pi-flag" action="country" />
+					<p:menuitem value="State" icon="pi pi-map-marker" action="state" />
+					<p:menuitem value="City" icon="pi pi-map-marker" action="city" />
+				</p:menu>
+			</p:sidebar>
+			<p:commandLink onclick="PF('sidebar').show()"
+				styleClass="sidebarbutton">
+				<i class="pi pi-bars"></i>
+			</p:commandLink>
+
+		</h:form>
+		<h2>Student Management System</h2>
+	</div>
+
+	<h:form>
+
+		<p:panelGrid columns="6" style="margin-top:30px">
+			<h:outputLabel value="City Name" for="cityName" />
+			<p:selectOneMenu id="cityName" value="">
+				<f:selectItem itemLabel="Select One" itemValue="" />
+				<f:selectItem itemLabel="US" itemValue="US" />
+				<f:selectItem itemLabel="CA" itemValue="CA" />
+				<f:selectItem itemLabel="UK" itemValue="UK" />
+				<f:selectItem itemLabel="IND" itemValue="IND" />
+			</p:selectOneMenu>
+
+			<p:commandButton value="Search" styleClass="panelGridButton" />
+			<p:commandButton value="Reset" styleClass="panelGridButton" />
+			<p:commandButton value="Add City" styleClass="panelGridButtonAdd"
+				onclick="PF('formDialogCity').show()" />
+		</p:panelGrid>
+
+		<div class="card" style="margin-top: 30px">
+			<h3>Country Details</h3>
+			<p:dataTable id="cityTable" value="" var="country"
+				styleClass="cityTable" paginator="true" paginatorPosition="bottom"
+				showGridlines="true" rows="10" rowsPerPageTemplate="5,10,15"
+				emptyMessage="No cities found.">
+				<p:column headerText="Country ID">
+					<h:outputText value="101" />
+				</p:column>
+
+				<p:column headerText="Country Code">
+					<h:outputText value="IND" />
+				</p:column>
+
+				<p:column headerText="Country Name">
+					<h:outputText value="India" />
+				</p:column>
+
+				<p:column headerText="State Name">
+					<h:outputText value="Andhra Pradesh" />
+				</p:column>
+				<p:column headerText="City Name">
+					<h:outputText value="Srikakulam" />
+				</p:column>
+				<p:column headerText="Actions">
+					<div class="actionsColumn">
+						<p:commandButton icon="pi pi-pencil" title="Edit"
+							styleClass="dataTableButton" />
+						<p:commandButton icon="pi pi-times" title="Delete"
+							styleClass="dataTableButton" />
+					</div>
+				</p:column>
+			</p:dataTable>
+		</div>
+
+	</h:form>
+
+	<p:dialog widgetVar="formDialogCity" header="Student Form"
+		showEffect="fade" hideEffect="fade" closeOnEscape="true"
+		styleClass="dialogContainer">
+
+		<!-- form -->
+		<h:form>
+			<p:panelGrid columns="2">
+				<p:outputLabel for="countryName" styleClass="block">Country Name</p:outputLabel>
+				<p:selectCheckboxMenu id="countryName" dynamic="true" filter="true"
+					filterMatchMode="startsWith" label="Countries" updateLabel="true"
+					selectedLabel="Item(s) Selected" style="width: 15rem"
+					panelStyle="width: 15rem" scrollHeight="250">
+					<f:selectItems />
+				</p:selectCheckboxMenu>
+				<p:outputLabel for="stateName" styleClass="block">State Name</p:outputLabel>
+				<p:selectCheckboxMenu id="stateName" dynamic="true" filter="true"
+					filterMatchMode="startsWith" label="States" updateLabel="true"
+					selectedLabel="Item(s) Selected" style="width: 15rem"
+					panelStyle="width: 15rem" scrollHeight="250">
+					<f:selectItems />
+				</p:selectCheckboxMenu>
+
+				<p:outputLabel for="cityName" styleClass="block">City Name</p:outputLabel>
+				<p:inputText id="cityName" styleClass="block" value="" />
+			</p:panelGrid>
+
+			<div class="dialogButtons">
+				<p:commandButton value="Submit" type="button"
+					styleClass="dialogButton" />
+				<p:commandButton value="Cancel" type="button" icon="pi pi-times"
+					onclick="PF('formDialogCity').hide()" styleClass="dialogButton" />
+			</div>
+		</h:form>
+
+	</p:dialog>
+</h:body>
+</html>
